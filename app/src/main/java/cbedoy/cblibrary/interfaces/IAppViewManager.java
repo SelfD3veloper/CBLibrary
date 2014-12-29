@@ -17,6 +17,10 @@ import cbedoy.cblibrary.viewcontrollers.AbstractViewController;
 public interface IAppViewManager
 {
     public Activity getActivity();
+    public void reActivateCurrentView();
+    public int getViewControllerWidth();
+    public int getViewControllerHeight();
+    public void presentLeftMenu();
     public void presentViewForTag(AbstractViewController.CONTROLLER tag);
     public void addViewWithTag(AbstractViewController controller, AbstractViewController.CONTROLLER tag);
 }
