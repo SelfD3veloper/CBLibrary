@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="tutorial_circle_visible">#009688</color>
+    <color name="tutorial_circle_no_visible">#B2DFDB</color>
+
+    <color name="action_bar">#1DE9B6</color>
+
+</resources>
