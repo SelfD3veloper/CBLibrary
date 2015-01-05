@@ -50,6 +50,7 @@ public class ApplicationLoader extends Application
     public static volatile Typeface thinFont;
     public static volatile Typeface lightFont;
     public static volatile Typeface cardFont;
+    public static Integer DISMISS_LOADER;
 
     @Override
     public void onCreate()

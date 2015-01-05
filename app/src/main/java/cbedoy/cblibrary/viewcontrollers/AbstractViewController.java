@@ -25,12 +25,26 @@ public abstract class AbstractViewController
     protected Bitmap backgroundBitmap;
     protected IMessageRepresentationHandler messageRepresentationHandler;
     protected boolean backStatus;
+    protected ANIMATION animation;
+
+    public void toogleButtons(boolean status) {
+        this.backStatus = status;
+    }
+
+
+    public enum ANIMATION{
+
+    }
 
     public enum CONTROLLER
     {
         LOGIN,
         PROFILE,
         ABOUT
+    }
+
+    public ANIMATION getAnimation() {
+        return animation;
     }
 
     protected abstract View init();

@@ -56,4 +56,7 @@ public class InjectionManager
     }
 
 
+    public void initApp(){
+
+    }
 }
