@@ -19,7 +19,7 @@ import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
  */
 public abstract class AbstractViewController
 {
-    protected CONTROLLER tag;
+    protected Enum tag;
     protected IAppViewManager appViewManager;
     protected View view;
     protected Bitmap backgroundBitmap;
@@ -36,13 +36,6 @@ public abstract class AbstractViewController
 
     }
 
-    public enum CONTROLLER
-    {
-        LOGIN,
-        PROFILE,
-        ABOUT
-    }
-
     public ANIMATION getAnimation() {
         return animation;
     }
@@ -50,7 +43,7 @@ public abstract class AbstractViewController
     protected abstract View init();
     public abstract void reload();
 
-    public void setTag(CONTROLLER tag) {
+    public void setTag(Enum tag) {
         this.tag = tag;
     }
 

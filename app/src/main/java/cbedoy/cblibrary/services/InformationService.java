@@ -1,5 +1,9 @@
 package cbedoy.cblibrary.services;
 
+import cbedoy.cblibrary.interfaces.IMementoHandler;
+import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
+import cbedoy.cblibrary.interfaces.IRestService;
+
 /**
  * Created by Carlos Bedoy on 28/12/2014.
  * <p/>
@@ -12,5 +16,19 @@ package cbedoy.cblibrary.services;
  */
 public class InformationService
 {
+    private IMementoHandler mementoHandler;
+    private IRestService restService;
+    private IMessageRepresentationHandler messageRepresentationHandler;
 
+    public void setMessageRepresentationHandler(IMessageRepresentationHandler messageRepresentationHandler) {
+        this.messageRepresentationHandler = messageRepresentationHandler;
+    }
+
+    public void setMementoHandler(IMementoHandler mementoHandler) {
+        this.mementoHandler = mementoHandler;
+    }
+
+    public void setRestService(IRestService restService) {
+        this.restService = restService;
+    }
 }

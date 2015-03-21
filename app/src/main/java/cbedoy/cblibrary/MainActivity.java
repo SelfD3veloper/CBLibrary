@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -21,7 +19,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +28,6 @@ import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
 import cbedoy.cblibrary.services.ApplicationLoader;
 import cbedoy.cblibrary.services.ImageService;
 import cbedoy.cblibrary.services.InjectionManager;
-import cbedoy.cblibrary.services.MementoHandler;
 import cbedoy.cblibrary.services.NotificationCenter;
 import cbedoy.cblibrary.utils.Utils;
 import cbedoy.cblibrary.viewcontrollers.AbstractViewController;
@@ -55,7 +51,7 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     private LinearLayout mainLayout;
     private int view_controller_width;
     private int view_controller_height;
-    private HashMap<AbstractViewController.CONTROLLER, AbstractViewController> viewModel;
+    private HashMap<Enum, AbstractViewController> viewModel;
     private ViewGroup splashView;
 
     private IMementoHandler mementoHandler;
@@ -74,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
         Utils.init(this);
         ImageService.init(this);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.viewModel = new HashMap<AbstractViewController.CONTROLLER, AbstractViewController>();
+        this.viewModel = new HashMap<Enum, AbstractViewController>();
         this.view_controller_height = ImageService.getScreenHeight();
         this.view_controller_width = ImageService.getScreenWidth();
 
@@ -147,7 +143,7 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
         int displayed_child = this.viewFlipper.getDisplayedChild();
         View view = this.viewFlipper.getChildAt(displayed_child);
 
-        for(Map.Entry<AbstractViewController.CONTROLLER, AbstractViewController> entry : this.viewModel.entrySet()) {
+        for(Map.Entry<Enum, AbstractViewController> entry : this.viewModel.entrySet()) {
             AbstractViewController child = entry.getValue();
             if(child.getView() == view) {
                 allowBack = child.onBackPressed();
@@ -184,7 +180,7 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
                 int displayed_child = self.viewFlipper.getDisplayedChild();
                 View view = self.viewFlipper.getChildAt(displayed_child);
 
-                for(Map.Entry<AbstractViewController.CONTROLLER, AbstractViewController> entry : self.viewModel.entrySet()) {
+                for(Map.Entry<Enum, AbstractViewController> entry : self.viewModel.entrySet()) {
                     AbstractViewController child = entry.getValue();
 
                     if(child.getView() == view) {
@@ -197,9 +193,9 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     }
 
     @Override
-    public void presentViewForTag(AbstractViewController.CONTROLLER tag) {
+    public void presentViewForTag(Enum tag) {
         final MainActivity self = this;
-        final AbstractViewController.CONTROLLER final_tag = tag;
+        final Enum final_tag = tag;
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -240,7 +236,7 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     }
 
     @Override
-    public void addViewWithTag(AbstractViewController controller, AbstractViewController.CONTROLLER tag) {
+    public void addViewWithTag(AbstractViewController controller, Enum tag) {
         this.viewModel.put(tag, controller);
     }
 

@@ -21,6 +21,6 @@ public interface IAppViewManager
     public int getViewControllerWidth();
     public int getViewControllerHeight();
     public void presentLeftMenu();
-    public void presentViewForTag(AbstractViewController.CONTROLLER tag);
-    public void addViewWithTag(AbstractViewController controller, AbstractViewController.CONTROLLER tag);
+    public void presentViewForTag(Enum tag);
+    public void addViewWithTag(AbstractViewController controller, Enum tag);
 }

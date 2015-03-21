@@ -59,4 +59,8 @@ public class InjectionManager
     public void initApp(){
 
     }
+
+    public boolean enableFlurry() {
+        return false;
+    }
 }
