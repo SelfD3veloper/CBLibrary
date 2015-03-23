@@ -10,5 +10,5 @@ package cbedoy.cblibrary.business;
  * Facebook: https://www.facebook.com/carlos.bedoy
  * Github: https://github.com/cbedoy
  */
-public class MasterBusinessController extends BusinessControllerM {
+public abstract class MasterBusinessController extends BusinessController {
 }

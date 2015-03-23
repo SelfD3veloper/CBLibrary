@@ -4,20 +4,20 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 
-import org.pademobile.application.ApplicationLoader;
-import org.pademobile.business.category.interfaces.ICategoryInformationDelegate;
-import org.pademobile.business.georeference.interfaces.IGeoReferenceInformationDelegate;
-import org.pademobile.business.leftmenu.interfaces.ICountryInformationDelegate;
-import org.pademobile.interfaces.IRestServiceCatchable;
-import org.pademobile.com.interfaces.IRestService;
+
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import cbedoy.cblibrary.interfaces.IRestService;
+import cbedoy.cblibrary.interfaces.IRestServiceCatchable;
 
 /**
  * Created by Carlos Bedoy on 12/18/14.
@@ -132,11 +132,7 @@ public class RestServiceCatchable implements IRestServiceCatchable
             }
             data = call.get();
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-        catch (ExecutionException e)
+        catch (InterruptedException | ExecutionException e)
         {
             e.printStackTrace();
         }
@@ -149,7 +145,7 @@ public class RestServiceCatchable implements IRestServiceCatchable
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
-    public void requestFromSHAWithHandler(String url, HashMap<String, Object> parameters, IRestService.IRestCallback callback, String SHA1, Object informationHandler)
+    public void requestFromSHAWithHandler(String url, HashMap<String, Object> parameters, IRestService.IRestCallback callback, String SHA1, Object className, Method method)
     {
         if(exitsFile(SHA1))
         {
@@ -157,17 +153,14 @@ public class RestServiceCatchable implements IRestServiceCatchable
             Boolean isValidCache = cacheFromSHA.containsKey("status") ? (Boolean) cacheFromSHA.get("status") : false;
             if(isValidCache)
             {
-                if(informationHandler instanceof ICategoryInformationDelegate)
+                try
                 {
-                    ((ICategoryInformationDelegate) informationHandler).categoryResponse(cacheFromSHA);
+                    method.invoke(className, cacheFromSHA);
                 }
-                else if(informationHandler instanceof IGeoReferenceInformationDelegate)
+                catch (IllegalAccessException | InvocationTargetException e)
                 {
-                    ((IGeoReferenceInformationDelegate) informationHandler).geoReferenceResponse(cacheFromSHA);
-                }
-                else if(informationHandler instanceof ICountryInformationDelegate)
-                {
-                    ((ICountryInformationDelegate) informationHandler).countriesResponse(cacheFromSHA);
+                    e.printStackTrace();
+                    LogService.e(e.getMessage());
                 }
             }
         }

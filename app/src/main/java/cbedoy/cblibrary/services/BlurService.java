@@ -13,7 +13,6 @@ import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
-import org.pademobile.application.ApplicationLoader;
 
 import java.util.concurrent.ExecutionException;
 

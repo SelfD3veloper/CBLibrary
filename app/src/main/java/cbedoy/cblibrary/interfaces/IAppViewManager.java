@@ -20,7 +20,7 @@ public interface IAppViewManager
     public void reActivateCurrentView();
     public int getViewControllerWidth();
     public int getViewControllerHeight();
-    public void presentLeftMenu();
-    public void presentViewForTag(Enum tag);
-    public void addViewWithTag(AbstractViewController controller, Enum tag);
+    public void presentViewForTag(String tag);
+    public void addViewWithTag(AbstractViewController controller, String tag);
+    public void addActivityResultListener(IActivityResultListener resultListener);
 }

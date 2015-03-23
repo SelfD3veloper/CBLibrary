@@ -6,13 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.cbedoy.apprende.R;
-import com.cbedoy.apprende.artifacts.AbstractViewPager;
-import com.cbedoy.apprende.service.MementoHandler;
-import com.cbedoy.apprende.widgets.abstracts.AbstractView;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cbedoy.cblibrary.R;
+import cbedoy.cblibrary.artifacts.AbstractViewPager;
+import cbedoy.cblibrary.services.ApplicationLoader;
+import cbedoy.cblibrary.services.MementoHandler;
+import cbedoy.cblibrary.widgets.AbstractView;
 
 /**
  * Created by Carlos Bedoy on 28/12/2014.
@@ -31,7 +32,7 @@ public class AbstractPagerViewController extends AbstractViewController {
     protected MementoHandler mementoHandler;
     protected List<AbstractView> viewModel;
     protected List<Object> dataModel;
-    protected ImageView background;
+    protected View background;
 
     public void setMementoHandler(MementoHandler mementoHandler) {
         this.mementoHandler = mementoHandler;
@@ -40,18 +41,18 @@ public class AbstractPagerViewController extends AbstractViewController {
 
 
     @Override
-    protected View init() {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.view = inflater.inflate(R.layout.app_aprende_viewcontroller,  null);
-        this.background = (ImageView) view.findViewById(R.id.background_apprende);
-        this.viewPager = (ViewPager) view.findViewById(R.id.pager);
-        this.dataModel = new ArrayList<Object>();
-        this.viewModel = new ArrayList<AbstractView>();
-        return view;
+    protected View onCreateView() {
+        LayoutInflater inflater = (LayoutInflater) ApplicationLoader.mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mViewController = inflater.inflate(R.layout.cb_library_pager_view_controller,  null);
+        this.background = mViewController.findViewById(R.id.view);
+        this.viewPager = (ViewPager) mViewController.findViewById(R.id.view_pager);
+        this.dataModel = new ArrayList<>();
+        this.viewModel = new ArrayList<>();
+        return mViewController;
     }
 
     @Override
-    public void reload() {
-
+    public void onAttachToWindow() {
+        super.onAttachToWindow();
     }
 }

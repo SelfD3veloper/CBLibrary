@@ -1,91 +1,127 @@
 package cbedoy.cblibrary.viewcontrollers;
 
-import android.content.Context;
-import android.graphics.Bitmap;
+
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+
+
 
 import cbedoy.cblibrary.interfaces.IAppViewManager;
+import cbedoy.cblibrary.interfaces.IMementoHandler;
 import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
+import cbedoy.cblibrary.interfaces.IToastRepresentationHandler;
+import cbedoy.cblibrary.interfaces.IViewController;
+import cbedoy.cblibrary.services.ApplicationLoader;
+import cbedoy.cblibrary.services.FlurryService;
+import cbedoy.cblibrary.services.LogService;
 
 /**
- * Created by Carlos Bedoy on 28/12/2014.
+ * Created by Carlos Bedoy on 10/7/14.
  *
- * Mobile App Developer
- * CBLibrary
- *
- * E-mail: carlos.bedoy@gmail.com
- * Facebook: https://www.facebook.com/carlos.bedoy
- * Github: https://github.com/cbedoy
+ * Mobile App Developer @Pademobile
  */
-public abstract class AbstractViewController
+public abstract class AbstractViewController implements IViewController
 {
-    protected Enum tag;
-    protected IAppViewManager appViewManager;
-    protected View view;
-    protected Bitmap backgroundBitmap;
-    protected IMessageRepresentationHandler messageRepresentationHandler;
-    protected boolean backStatus;
-    protected ANIMATION animation;
+    protected View                          mViewController;
+    protected boolean                       mActive;
+    protected String                        mTag;
+    protected boolean                       mIsAttached;
+    protected IAppViewManager               mViewManager;
+    protected IMementoHandler               mMementoHandler;
+    protected IToastRepresentationHandler   mToastRepresentationHandler;
+    protected IMessageRepresentationHandler mMessageRepresentationHandler;
 
-    public void toogleButtons(boolean status) {
-        this.backStatus = status;
+    protected abstract View onCreateView();
+
+
+    public void setToastRepresentationHandler(IToastRepresentationHandler toastRepresentationHandler) {
+        this.mToastRepresentationHandler = toastRepresentationHandler;
     }
 
-
-    public enum ANIMATION{
-
-    }
-
-    public ANIMATION getAnimation() {
-        return animation;
-    }
-
-    protected abstract View init();
-    public abstract void reload();
-
-    public void setTag(Enum tag) {
-        this.tag = tag;
+    public void setTag(String tag) {
+        this.mTag = tag;
     }
 
     public void setAppViewManager(IAppViewManager appViewManager) {
-        this.appViewManager = appViewManager;
-    }
-
-    public void setBackgroundBitmap(Bitmap backgroundBitmap) {
-        this.backgroundBitmap = backgroundBitmap;
+        this.mViewManager = appViewManager;
     }
 
     public void setMessageRepresentationHandler(IMessageRepresentationHandler messageRepresentationHandler) {
-        this.messageRepresentationHandler = messageRepresentationHandler;
+        this.mMessageRepresentationHandler = messageRepresentationHandler;
     }
 
-    public void setView(View view) {
-        this.view = view;
+    public View getViewController() {
+        if(mViewController == null)
+            mViewController = onCreateView();
+        mViewController.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (!(view instanceof EditText)) {
+                    ApplicationLoader.hideKeyboard(mViewManager.getActivity());
+                }
+                return false;
+            }
+        });
+        return mViewController;
     }
 
-
-
-    public View getView() {
-        if(view == null)
-            view = init();
-        return view;
+    public void setMementoHandler(IMementoHandler mementoHandler) {
+        mMementoHandler = mementoHandler;
     }
 
-    public void backPressed() {
-        this.appViewManager.getActivity().finish();
-    }
-
-    public void nextPressed() {
-
-    }
-
-    public void setBackStatus(boolean backStatus) {
-        this.backStatus = backStatus;
+    public void setActive(boolean active) {
+        this.mActive = active;
     }
 
     public boolean onBackPressed() {
         return true;
     }
 
+    public String getTag() {    return mTag; }
 
+    @Override
+    public void onAttachToWindow() {
+        mIsAttached     = true;
+        mActive         = true;
+
+        FlurryService.getInstance().logEvent("Se añade la vista  " + mTag + " a la pantalla");
+    }
+
+    @Override
+    public void onRemoveToWindow() {
+        mIsAttached     = false;
+        mViewController = null;
+        mActive         = false;
+        System.gc();
+
+        FlurryService.getInstance().logEvent("Se elimina la vista "+ mTag +" de la pantalla");
+    }
+
+    @Override
+    public void onLowMemory()
+    {
+        FlurryService.getInstance().logEvent("Hay poca memoria para la vista de "+mTag);
+        System.gc();
+    }
+
+    @Override   public void onFinish() {
+        LogService.i("ON FINISH FROM " + mTag);
+    }
+
+    @Override   public void onPause() {
+        LogService.i("ON PAUSE FROM "+mTag);
+    }
+
+    @Override   public void onResume() {
+        LogService.i("ON RESUME FROM "+mTag);
+    }
+
+    @Override   public void onStart() {
+        LogService.i("ON START FROM "+mTag);
+    }
+
+    @Override   public void onStop() {
+        LogService.i("ON STOP FROM "+mTag);
+    }
 }

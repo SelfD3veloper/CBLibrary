@@ -7,7 +7,8 @@ import org.apache.http.NameValuePair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.Attributes;
+
+import cbedoy.cblibrary.business.InjectionManager;
 
 
 /**

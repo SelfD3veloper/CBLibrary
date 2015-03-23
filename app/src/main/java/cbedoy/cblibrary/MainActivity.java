@@ -5,26 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import cbedoy.cblibrary.interfaces.IActivityResultListener;
 import cbedoy.cblibrary.interfaces.IAppViewManager;
-import cbedoy.cblibrary.interfaces.IMementoHandler;
-import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
+import cbedoy.cblibrary.interfaces.IViewController;
 import cbedoy.cblibrary.services.ApplicationLoader;
 import cbedoy.cblibrary.services.ImageService;
 import cbedoy.cblibrary.services.InjectionManager;
@@ -43,66 +40,33 @@ import cbedoy.cblibrary.viewcontrollers.AbstractViewController;
  * Github: https://github.com/cbedoy
  */
 
-public class MainActivity extends ActionBarActivity implements IAppViewManager, NotificationCenter.NotificationListener{
+public abstract class MainActivity extends ActionBarActivity implements IAppViewManager{
 
-    private ViewFlipper viewFlipper;
-    private SlidingPaneLayout slidingPaneLayout;
-    private HashMap<Object, Object> informationService;
-    private LinearLayout mainLayout;
-    private int view_controller_width;
-    private int view_controller_height;
-    private HashMap<Enum, AbstractViewController> viewModel;
-    private ViewGroup splashView;
-
-    private IMementoHandler mementoHandler;
-    private IMessageRepresentationHandler messageRepresentationHandler;
-    private LinearLayout leftMenu;
+    protected ViewFlipper                               mViewFlipper;
+    protected int                                       mViewControllerWidth;
+    protected int                                       mViewControllerHeight;
+    protected HashMap<String, AbstractViewController>   mViewModel;
+    protected List<IActivityResultListener>             mListeners;
+    protected IViewController                           mCurrentViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        NotificationCenter.getInstance().addListener(ApplicationLoader.DISMISS_LOADER, this);
-        this.splashView = (LinearLayout) findViewById(R.id.splash_view);
-        this.leftMenu = (LinearLayout) findViewById(R.id.main_view_controller_left_menu);
-        getSupportActionBar().hide();
+        //Required instance mViewFlipper from extends class
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mViewModel = new HashMap<>();
+        mViewControllerHeight = ImageService.getScreenHeight();
+        mViewControllerWidth = ImageService.getScreenWidth();
         Utils.init(this);
         ImageService.init(this);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.viewModel = new HashMap<Enum, AbstractViewController>();
-        this.view_controller_height = ImageService.getScreenHeight();
-        this.view_controller_width = ImageService.getScreenWidth();
-
-        this.viewFlipper = (ViewFlipper) findViewById(R.id.main_view_controller_view_flipper);
-        this.slidingPaneLayout = (SlidingPaneLayout) findViewById(R.id.slidingPane);
-        this.slidingPaneLayout.setCoveredFadeColor(Color.parseColor("#00000000"));
-        this.slidingPaneLayout.setSliderFadeColor(Color.parseColor("#00000000"));
-
-
-        TranslateAnimation in = new TranslateAnimation(ImageService.getScreenWidth(), 0, 0, 0);
-        in.setDuration(3000);
-        in.setZAdjustment(Animation.ZORDER_TOP);
-        this.viewFlipper.setInAnimation(in);
-        TranslateAnimation out = new TranslateAnimation(0, -ImageService.getScreenWidth(), 0, 0);
-        out.setDuration(3000);
-        out.setZAdjustment(Animation.ZORDER_TOP);
-        this.viewFlipper.setOutAnimation(out);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-
-        leftMenu.setVisibility(View.GONE);
-
         InjectionManager.getInstance();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-
-    public void setLeftMenuView(AbstractViewController controller) {
-        this.leftMenu.addView(controller.getView());
+    public void addActivityResultListener(IActivityResultListener resultListener) {
+        if(mListeners == null)
+            mListeners = new ArrayList<>();
+        mListeners.add(resultListener);
     }
 
     @Override
@@ -119,11 +83,22 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     }
 
     private void terminateInApp(){
-        this.overridePendingTransition(R.anim.fadeout, R.anim.fadein);
+        overridePendingTransition(R.anim.fadeout, R.anim.fadein);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(mListeners != null)
+        {
+            for(IActivityResultListener resultListener : mListeners)
+            {
+                if(requestCode == resultListener.getRequestCode())
+                {
+                    resultListener.onActivityResult(resultCode, data);
+                }
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -140,12 +115,12 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     @Override
     public void onBackPressed() {
         boolean allowBack = true;
-        int displayed_child = this.viewFlipper.getDisplayedChild();
-        View view = this.viewFlipper.getChildAt(displayed_child);
+        int displayed_child = this.mViewFlipper.getDisplayedChild();
+        View view = this.mViewFlipper.getChildAt(displayed_child);
 
-        for(Map.Entry<Enum, AbstractViewController> entry : this.viewModel.entrySet()) {
+        for(Map.Entry<String, AbstractViewController> entry : this.mViewModel.entrySet()) {
             AbstractViewController child = entry.getValue();
-            if(child.getView() == view) {
+            if(child.getViewController() == view) {
                 allowBack = child.onBackPressed();
                 break;
             }
@@ -157,12 +132,12 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
 
     @Override
     public int getViewControllerWidth() {
-        return this.view_controller_width;
+        return this.mViewControllerWidth;
     }
 
     @Override
     public int getViewControllerHeight() {
-        return this.view_controller_height;
+        return this.mViewControllerHeight;
     }
 
     @Override
@@ -177,14 +152,14 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int displayed_child = self.viewFlipper.getDisplayedChild();
-                View view = self.viewFlipper.getChildAt(displayed_child);
+                int displayed_child = self.mViewFlipper.getDisplayedChild();
+                View view = self.mViewFlipper.getChildAt(displayed_child);
 
-                for(Map.Entry<Enum, AbstractViewController> entry : self.viewModel.entrySet()) {
+                for(Map.Entry<String, AbstractViewController> entry : self.mViewModel.entrySet()) {
                     AbstractViewController child = entry.getValue();
 
-                    if(child.getView() == view) {
-                        child.toogleButtons(true);
+                    if(child.getViewController() == view) {
+                        child.setActive(true);
                         break;
                     }
                 }
@@ -193,111 +168,61 @@ public class MainActivity extends ActionBarActivity implements IAppViewManager, 
     }
 
     @Override
-    public void presentViewForTag(Enum tag) {
+    public void presentViewForTag(String tag) {
         final MainActivity self = this;
-        final Enum final_tag = tag;
+        final String final_tag = tag;
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AbstractViewController child = self.viewModel.get(final_tag);
-                View view = child.getView();
+                AbstractViewController child = self.mViewModel.get(final_tag);
+                View view = child.getViewController();
 
                 ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                int child_index = self.viewFlipper.indexOfChild(view);
+                int child_index = self.mViewFlipper.indexOfChild(view);
                 if (child_index < 0) {
-                    self.viewFlipper.addView(view);
-                    child_index = self.viewFlipper.indexOfChild(view);
+                    self.mViewFlipper.addView(view);
+                    child_index = self.mViewFlipper.indexOfChild(view);
                 }
 
-                int displayed_child = self.viewFlipper.getDisplayedChild();
-                if (child_index != displayed_child) {
-                    int width = self.view_controller_width;
-                    int ltr = child_index > displayed_child ? 1 : -1;
+                int displayed_child = self.mViewFlipper.getDisplayedChild();
+                if (child_index != displayed_child)
+                {
 
-                    {{
-                        AlphaAnimation in = new AlphaAnimation(0.0f, 1.0f);
-                        in.setDuration(600);
-                        in.setZAdjustment(Animation.ZORDER_TOP);
-                        self.viewFlipper.setInAnimation(in);
+                    AlphaAnimation in = new AlphaAnimation(0.0f, 1.0f);
+                    in.setDuration(600);
+                    in.setZAdjustment(Animation.ZORDER_TOP);
+                    self.mViewFlipper.setInAnimation(in);
 
-                        AlphaAnimation out = new AlphaAnimation(1.0f, 0.0f);
-                        out.setDuration(600);
-                        out.setZAdjustment(Animation.ZORDER_TOP);
-                        self.viewFlipper.setOutAnimation(out);
-                    }}
+                    AlphaAnimation out = new AlphaAnimation(1.0f, 0.0f);
+                    out.setDuration(600);
+                    out.setZAdjustment(Animation.ZORDER_TOP);
+                    self.mViewFlipper.setOutAnimation(out);
 
-                    self.viewFlipper.setDisplayedChild(child_index);
+
+                    self.mViewFlipper.setDisplayedChild(child_index);
+
+
+                    final IViewController controller = mCurrentViewController;
+                    controller.setActive(false);
+                    if (!self.isFinishing()) {
+                        self.mViewFlipper.setInAnimation(null);
+                        self.mViewFlipper.setOutAnimation(null);
+                        self.mViewFlipper.removeView(controller.getViewController());
+                        controller.onRemoveToWindow();
+                    }
                 }
-
-                child.reload();
+                child.onAttachToWindow();
+                child.setActive(true);
+                mCurrentViewController = child;
             }
         });
     }
 
     @Override
-    public void addViewWithTag(AbstractViewController controller, Enum tag) {
-        this.viewModel.put(tag, controller);
-    }
-
-    @Override
-    public void presentLeftMenu() {
-        if(slidingPaneLayout != null)
-        {
-            slidingPaneLayout.setVisibility(View.VISIBLE);
-            if (slidingPaneLayout.isOpen())
-                slidingPaneLayout.closePane();
-            else
-                slidingPaneLayout.openPane();
-        }
-    }
-
-    @Override
-    public void didReceivedNotification(Integer type, Object... args)
-    {
-        if(type == ApplicationLoader.DISMISS_LOADER)
-        {
-            Animation animation = new AlphaAnimation(1.00f, 0.00f);
-            animation.setDuration(200);
-            animation.setAnimationListener(new Animation.AnimationListener()
-            {
-                public void onAnimationStart(Animation animation)
-                {
-                    splashView.setVisibility(View.VISIBLE);
-                    leftMenu.setVisibility(View.GONE);
-                }
-                public void onAnimationRepeat(Animation animation) {}
-
-                public void onAnimationEnd(Animation animation)
-                {
-                    splashView.setVisibility(View.GONE);
-                    leftMenu.setVisibility(View.VISIBLE);
-                }
-            });
-            if(splashView.getVisibility() == View.VISIBLE)
-                splashView.startAnimation(animation);
-
-        }
+    public void addViewWithTag(AbstractViewController controller, String tag) {
+        this.mViewModel.put(tag, controller);
     }
 
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
 }

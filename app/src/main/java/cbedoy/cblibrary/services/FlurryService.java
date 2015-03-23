@@ -15,21 +15,29 @@ import android.location.LocationManager;
  */
 
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import cbedoy.cblibrary.business.InjectionManager;
 import cbedoy.cblibrary.interfaces.ICheckPointHandler;
 
 public class FlurryService implements ICheckPointHandler
 {
     private static FlurryService instance;
     private boolean activateFlurry = InjectionManager.getInstance().enableFlurry();
+    private String mKey;
 
     public static FlurryService getInstance()
     {
         if(instance == null)
             instance = new FlurryService();
         return  instance;
+    }
+
+    public void setKey(String mKey) {
+        this.mKey = mKey;
     }
 
     private FlurryService()
@@ -46,7 +54,13 @@ public class FlurryService implements ICheckPointHandler
                 float latitude = (float) location.getLatitude();
                 FlurryAgent.setLocation(longitude, latitude);
             }
-            FlurryAgent.init(ApplicationLoader.mainContext, ApplicationLoader.FLURRY_KEY);
+        }
+    }
+
+    public void init(){
+        if(activateFlurry)
+        {
+            FlurryAgent.init(ApplicationLoader.mainContext, mKey);
         }
     }
 
@@ -54,7 +68,7 @@ public class FlurryService implements ICheckPointHandler
     {
         if(activateFlurry)
         {
-            FlurryAgent.onStartSession(context, ApplicationLoader.FLURRY_KEY);
+            FlurryAgent.onStartSession(context, mKey);
         }
     }
 
