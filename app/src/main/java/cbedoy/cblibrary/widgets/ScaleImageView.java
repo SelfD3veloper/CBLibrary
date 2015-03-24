@@ -21,6 +21,12 @@ public class ScaleImageView extends ImageView {
         super(context, attrs);
     }
 
+    public ScaleImageView(Context applicationContext) {
+
+        super(applicationContext);
+    }
+
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
         Drawable d = getDrawable();

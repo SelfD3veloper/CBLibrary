@@ -17,6 +17,7 @@ import cbedoy.cblibrary.viewcontrollers.AbstractViewController;
 public interface IAppViewManager
 {
     public Activity getActivity();
+    public void setBackgroundViewController(Object... values);
     public void reActivateCurrentView();
     public int getViewControllerWidth();
     public int getViewControllerHeight();

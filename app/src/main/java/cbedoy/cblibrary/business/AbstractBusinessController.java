@@ -15,21 +15,17 @@ import cbedoy.cblibrary.interfaces.IMessageRepresentationHandler;
  * Facebook: https://www.facebook.com/carlos.bedoy
  * Github: https://github.com/cbedoy
  */
-public abstract class BusinessController implements IBackCore
+public abstract class AbstractBusinessController implements IBackCore
 {
-    protected IMementoHandler mementoHandler;
-    protected IMessageRepresentationHandler messageRepresentationHandler;
+    protected IMementoHandler mMementoHandler;
+    protected IMessageRepresentationHandler mMessageRepresentationHandler;
 
     public void setMementoHandler(IMementoHandler mementoHandler) {
-        this.mementoHandler = mementoHandler;
+        this.mMementoHandler = mementoHandler;
     }
 
     public void setMessageRepresentationHandler(IMessageRepresentationHandler messageRepresentationHandler) {
-        this.messageRepresentationHandler = messageRepresentationHandler;
+        this.mMessageRepresentationHandler = messageRepresentationHandler;
     }
 
-    @Override
-    public void backRequested() {
-        mementoHandler.popDataFor(this);
-    }
 }

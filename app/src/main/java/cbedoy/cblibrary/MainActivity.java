@@ -57,15 +57,14 @@ public abstract class MainActivity extends ActionBarActivity implements IAppView
         mViewModel = new HashMap<>();
         mViewControllerHeight = ImageService.getScreenHeight();
         mViewControllerWidth = ImageService.getScreenWidth();
+        mListeners = new ArrayList<>();
         Utils.init(this);
         ImageService.init(this);
-        InjectionManager.getInstance();
+        InjectionManager.getInstance().initApp();
     }
 
     @Override
     public void addActivityResultListener(IActivityResultListener resultListener) {
-        if(mListeners == null)
-            mListeners = new ArrayList<>();
         mListeners.add(resultListener);
     }
 

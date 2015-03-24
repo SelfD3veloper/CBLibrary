@@ -1,6 +1,5 @@
 package cbedoy.cblibrary.artifacts;
 
-import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -25,17 +24,17 @@ import cbedoy.cblibrary.widgets.AbstractView;
  */
 public abstract class AbstractViewPager extends PagerAdapter
 {
-    private List<Object> dataModel;
-    private List<AbstractView> viewModel;
+    private List<Object> mDataModel;
+    private List<AbstractView> mViewModel;
 
     public AbstractViewPager(List<Object> dataModel, List<AbstractView> viewModel){
-        this.dataModel = dataModel;
-        this.viewModel = viewModel;
+        mDataModel = dataModel;
+        mViewModel = viewModel;
     }
 
     @Override
     public int getCount() {
-        return dataModel.size();
+        return mDataModel.size();
     }
 
     @Override
@@ -45,8 +44,8 @@ public abstract class AbstractViewPager extends PagerAdapter
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        AbstractView abstractView = viewModel.get(position);
-        HashMap<String, Object> currentModel = (HashMap<String, Object>) dataModel.get(position);
+        AbstractView abstractView = mViewModel.get(position);
+        HashMap<String, Object> currentModel = (HashMap<String, Object>) mDataModel.get(position);
         abstractView.setDataModel(currentModel);
         abstractView.getView();
         abstractView.reload();

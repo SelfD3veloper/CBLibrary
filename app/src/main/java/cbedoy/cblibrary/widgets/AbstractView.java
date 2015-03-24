@@ -19,14 +19,14 @@ import java.util.List;
  */
 public abstract class AbstractView
 {
-    protected HashMap<String, Object> dataModel;
-    protected List<HashMap<String, Object>> viewModel;
+    protected HashMap<String, Object> mDataModel;
+    protected List<HashMap<String, Object>> mViewModel;
     protected Context context;
     protected View view;
     protected LayoutInflater layoutInflater;
 
     public void setDataModel(HashMap<String, Object> dataModel) {
-        this.dataModel = dataModel;
+        this.mDataModel = dataModel;
     }
 
     public void setLayoutInflater(LayoutInflater layoutInflater) {

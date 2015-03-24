@@ -22,22 +22,22 @@ import cbedoy.cblibrary.R;
  */
 public class CircleTutorialAdapter extends BaseAdapter
 {
-    private List<Boolean> viewModel;
-    private Context context;
+    private List<Boolean> mViewModel;
+    private Context mContext;
 
     public CircleTutorialAdapter(Context context, List<Boolean> viewModel){
-        this.context = context;
-        this.viewModel = viewModel;
+        this.mContext = context;
+        this.mViewModel = viewModel;
     }
 
     @Override
     public int getCount() {
-        return viewModel.size();
+        return mViewModel.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return viewModel.get(i);
+        return mViewModel.get(i);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CircleTutorialAdapter extends BaseAdapter
         ViewHolder viewHolder;
         if(convertView == null)
         {
-            convertView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.tutorial_cell_circle, null);
+            convertView = ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.tutorial_cell_circle, null);
             viewHolder = new ViewHolder();
             viewHolder.view = convertView.findViewById(R.id.circle_view);
             convertView.setTag(viewHolder);
@@ -60,14 +60,14 @@ public class CircleTutorialAdapter extends BaseAdapter
         {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        boolean isCurrentVisible = viewModel.get(position);
+        boolean isCurrentVisible = mViewModel.get(position);
         if(isCurrentVisible)
         {
-            viewHolder.view.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.circle_tutorial_visible));
+            viewHolder.view.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.circle_tutorial_visible));
         }
         else
         {
-            viewHolder.view.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.circle_tutorial_no_visible));
+            viewHolder.view.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.circle_tutorial_no_visible));
         }
         return convertView;
     }

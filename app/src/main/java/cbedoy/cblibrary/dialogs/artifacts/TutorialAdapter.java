@@ -24,11 +24,9 @@ public class TutorialAdapter extends PagerAdapter
 {
 
     private List<View> viewModel;
-    private Context context;
 
-    public TutorialAdapter(Context context, List<View> viewModel)
+    public TutorialAdapter(List<View> viewModel)
     {
-        this.context = context;
         this.viewModel = viewModel;
 
     }

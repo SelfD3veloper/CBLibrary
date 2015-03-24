@@ -54,13 +54,6 @@ public class CacheService
         new File(this.folderStorage).mkdirs();
     }
 
-    public void reloadFavorite(String sha, HashMap<String, Object> service)
-    {
-        ArrayList<HashMap<String, Object>> serviceList = readCacheFromSHA(sha);
-        serviceList.add(service);
-        writeCacheForSHA(sha, serviceList);
-    }
-
     private boolean writeCacheForSHA(String sha, ArrayList<HashMap<String, Object>> serviceList)
     {
         try
