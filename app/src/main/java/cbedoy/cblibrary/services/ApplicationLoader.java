@@ -38,7 +38,7 @@ import cbedoy.cblibrary.utils.ImageLoaderService;
  * Facebook: https://www.facebook.com/carlos.bedoy
  * Github: https://github.com/cbedoy
  */
-public class ApplicationLoader extends Application
+public class ApplicationLoader extends SugarApp
 {
     public static volatile Handler mainHandler;
     public static volatile Context mainContext;
