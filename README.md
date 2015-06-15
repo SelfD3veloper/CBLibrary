@@ -1,4 +1,6 @@
 #CBLibrary
+
+[![Join the chat at https://gitter.im/SelfD3veloper/CBLibrary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SelfD3veloper/CBLibrary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 This library provide an Architecture with the objects, clases, services, views, artifacts with whom I work on my Android projects :)
 
 ###Artifacts:
