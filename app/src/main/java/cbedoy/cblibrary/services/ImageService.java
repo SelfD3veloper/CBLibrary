@@ -39,10 +39,6 @@ public class ImageService {
     private static DisplayMetrics mMetrics;
     private static HashMap<String, Typeface> mFontsMap;
     private static HashMap<String, String> mImagesMap;
-    public static Typeface boldFont;
-    public static Typeface regularFont;
-    public static Typeface thinFont;
-    public static Typeface lightFont;
 
 
     public static void init(Activity activity) {
@@ -104,10 +100,6 @@ public class ImageService {
         } catch (Exception e) {
         }
 
-        boldFont 		= Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
-        regularFont 	= Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Regular.ttf");
-        thinFont 		= Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
-        lightFont 		= Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Light.ttf");
     }
 
     public static void deInit() {
