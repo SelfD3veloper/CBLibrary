@@ -22,8 +22,6 @@ import android.view.View;
 
 import java.util.concurrent.ExecutionException;
 
-import cbedoy.cblibrary.interfaces.IAppViewManager;
-
 
 public class BlurService {
 
@@ -194,34 +192,6 @@ public class BlurService {
         else
         {
             mDrawableBackground = new ColorDrawable(Color.TRANSPARENT);
-        }
-    }
-
-    public void doBlurWithBitmap(Bitmap bitmapFromFile, IAppViewManager viewManager)
-    {
-        if(mBluredService != null)
-        {
-            mBluredService.recycle();
-            mBluredService = null;
-        }
-        Bitmap firstBlurImage = performRequestBlurByImage(bitmapFromFile);
-        if(firstBlurImage != null)
-        {
-            mBluredService = performRequestBlurByImage(firstBlurImage);
-            viewManager.setBackgroundViewController(mBluredService);
-        }
-        else
-        {
-            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#CC2F2B29"));
-            viewManager.setBackgroundViewController(bitmapFromFile, colorDrawable);
-        }
-        if(bitmapFromFile != null)
-        {
-            bitmapFromFile.recycle();
-        }
-        if(firstBlurImage != null)
-        {
-            firstBlurImage.recycle();
         }
     }
 

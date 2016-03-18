@@ -32,7 +32,7 @@ public class CircularProgressBar extends View {
 
 
     private static final String INSTANCE_STATE_SAVEDSTATE = "saved_state";
-    private static final String INSTANCE_STATE_PROGRESS = "progress";
+    private static final String INSTANCE_STATE_PROGRESS = "progress_loader";
     private static final String INSTANCE_STATE_MARKER_PROGRESS = "marker_progress";
     private static final String INSTANCE_STATE_PROGRESS_BACKGROUND_COLOR = "progress_background_color";
     private static final String INSTANCE_STATE_PROGRESS_COLOR = "progress_color";
@@ -87,7 +87,7 @@ public class CircularProgressBar extends View {
             {
                 setProgressColor(attributes.getColor(R.styleable.HoloCircularProgressBar_progress_color, Color.CYAN));
                 setProgressBackgroundColor(attributes.getColor(R.styleable.HoloCircularProgressBar_progress_background_color,Color.GREEN));
-                setProgress(attributes.getFloat(R.styleable.HoloCircularProgressBar_progress, 0.0f));
+                setProgress(attributes.getFloat(R.styleable.HoloCircularProgressBar_progress_loader, 0.0f));
                 setWheelSize((int) attributes.getDimension(R.styleable.HoloCircularProgressBar_stroke_width, 10));
                 setThumbEnabled(attributes.getBoolean(R.styleable.HoloCircularProgressBar_thumb_visible, true));
 

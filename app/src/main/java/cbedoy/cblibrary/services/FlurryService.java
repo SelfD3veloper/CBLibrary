@@ -2,32 +2,31 @@
 package cbedoy.cblibrary.services;
 
 import android.content.Context;
-import android.location.Location;
 import android.location.LocationManager;
-
-
-/**
- * Created by Carlos Bedoy on 26/12/14.
- *
- * Mobile App Developer @ Bills Android
- *
- * Pademobile
- */
-
 
 import com.flurry.android.FlurryAgent;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import cbedoy.cblibrary.business.InjectionManager;
 import cbedoy.cblibrary.interfaces.ICheckPointHandler;
+
+/**
+ * Created by Carlos Bedoy on 26/12/14.
+ * <p/>
+ * Mobile App Developer @ Bills Android
+ * <p/>
+ * Pademobile
+ */
 
 public class FlurryService implements ICheckPointHandler
 {
     private static FlurryService instance;
-    private boolean activateFlurry = InjectionManager.getInstance().enableFlurry();
+    private boolean activateFlurry;
     private String mKey;
+
+    public void setActivateFlurry(boolean activateFlurry) {
+        this.activateFlurry = activateFlurry;
+    }
 
     public static FlurryService getInstance()
     {
@@ -48,12 +47,6 @@ public class FlurryService implements ICheckPointHandler
             FlurryAgent.setLogEvents(true);
             FlurryAgent.setReportLocation(true);
             LocationManager lm = (LocationManager)ApplicationLoader.mainContext.getSystemService(Context.LOCATION_SERVICE);
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null){
-                float longitude = (float) location.getLongitude();
-                float latitude = (float) location.getLatitude();
-                FlurryAgent.setLocation(longitude, latitude);
-            }
         }
     }
 
@@ -83,7 +76,6 @@ public class FlurryService implements ICheckPointHandler
     {
         if(activateFlurry) {
             FlurryAgent.logEvent(event);
-            LogService.e(event);
         }
     }
 
@@ -92,7 +84,6 @@ public class FlurryService implements ICheckPointHandler
     {
         if(activateFlurry) {
             FlurryAgent.logEvent(event, timed);
-            LogService.e("Timed "+timed);
         }
     }
 
@@ -102,10 +93,6 @@ public class FlurryService implements ICheckPointHandler
         if(activateFlurry)
         {
             FlurryAgent.logEvent(event, parameters);
-            LogService.e(event);
-            for(Map.Entry<String, String> entry : parameters.entrySet()){
-                LogService.i(entry.getKey() + " : "+ entry.getValue());
-            }
         }
     }
 
@@ -115,12 +102,6 @@ public class FlurryService implements ICheckPointHandler
         if(activateFlurry)
         {
             FlurryAgent.logEvent(event, parameters, timed);
-            LogService.e(event);
-            LogService.e("<<<------------------------------------------------");
-            for(Map.Entry<String, String> entry : parameters.entrySet()){
-                LogService.i(entry.getKey() + " : "+ entry.getValue());
-            }
-            LogService.e("Timed "+timed);
         }
     }
 

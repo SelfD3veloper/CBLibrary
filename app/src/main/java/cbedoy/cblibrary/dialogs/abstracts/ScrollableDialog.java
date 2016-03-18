@@ -12,15 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-
-
 import java.util.ArrayList;
 
 import cbedoy.cblibrary.R;
 import cbedoy.cblibrary.dialogs.artifacts.TutorialAdapter;
-import cbedoy.cblibrary.services.ApplicationLoader;
 import cbedoy.cblibrary.widgets.CircleView;
 import cbedoy.cblibrary.widgets.ScaleImageView;
 
@@ -114,10 +109,7 @@ public abstract class ScrollableDialog extends AbstractDialog implements ViewPag
     protected void createImageWithResourceAndStatus(Object resource, boolean status){
         ScaleImageView imageView = new ScaleImageView(mActivity.getApplicationContext());
         String path = mEnvironmentPath + resource;
-        if(resource instanceof String)
-            ImageLoader.getInstance().displayImage(path, imageView, ApplicationLoader.options);
-        else
-            imageView.setImageResource((Integer) resource);
+    //TODO
         CircleView circleView = new CircleView(mActivity.getApplicationContext());
         circleView.setStatus(status);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);

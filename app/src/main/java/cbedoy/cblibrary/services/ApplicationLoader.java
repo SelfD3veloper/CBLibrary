@@ -2,7 +2,6 @@ package cbedoy.cblibrary.services;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -10,22 +9,16 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.multidex.MultiDexApplication;
 import android.view.LayoutInflater;
 import android.view.inputmethod.InputMethodManager;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import cbedoy.cblibrary.R;
 import cbedoy.cblibrary.utils.ImageLoaderService;
 
 /**
@@ -38,17 +31,17 @@ import cbedoy.cblibrary.utils.ImageLoaderService;
  * Facebook: https://www.facebook.com/carlos.bedoy
  * Github: https://github.com/cbedoy
  */
-public class ApplicationLoader extends SugarApp
+public class ApplicationLoader extends MultiDexApplication
 {
     public static volatile Handler mainHandler;
     public static volatile Context mainContext;
     public static volatile LayoutInflater mainLayoutInflater;
-    public static volatile DisplayImageOptions options;
     public static volatile String urlProject;
     public static volatile Typeface boldFont;
     public static volatile Typeface regularFont;
     public static volatile Typeface thinFont;
     public static volatile Typeface lightFont;
+    public static volatile Typeface mediumFont;
     public static volatile Typeface cardFont;
     public static Integer DISMISS_LOADER;
 
@@ -65,27 +58,9 @@ public class ApplicationLoader extends SugarApp
         thinFont 	                    = Typeface.createFromAsset(mainContext.getAssets(), "fonts/Roboto-Thin.ttf");
         lightFont 	                    = Typeface.createFromAsset(mainContext.getAssets(), "fonts/Roboto-Light.ttf");
         cardFont 	                    = Typeface.createFromAsset(mainContext.getAssets(), "fonts/CardType.ttf");
+        mediumFont 	                    = Typeface.createFromAsset(mainContext.getAssets(), "fonts/Roboto-Medium.ttf");
 
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.ic_launcher)
-                .showImageForEmptyUri(R.drawable.ic_launcher)
-                .showImageOnFail(R.drawable.ic_launcher)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                .diskCacheSize(5 * 1024 * 1024) // 50 Mb
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .writeDebugLogs() // Remove for release app
-                .build();
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config);
 
         ImageLoaderService.getInstance();
 
@@ -96,42 +71,14 @@ public class ApplicationLoader extends SugarApp
         super.onConfigurationChanged(newConfig);
     }
 
-    public static int getAppVersion() {
+    public static String getAppVersion() {
         try {
             PackageInfo packageInfo = mainContext.getPackageManager().getPackageInfo(mainContext.getPackageName(), 0);
-            return packageInfo.versionCode;
+            return packageInfo.versionName + "  ("+packageInfo.versionCode+")";
         } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Could not get package name: " + e);
+            e.printStackTrace();
+            return "";
         }
-    }
-
-    public static void startPushService() {
-        SharedPreferences preferences = mainContext.getSharedPreferences("Notifications", MODE_PRIVATE);
-
-        if (preferences.getBoolean("pushService", true)) {
-            mainContext.startService(new Intent(mainContext, NotificationService.class));
-
-            if (android.os.Build.VERSION.SDK_INT >= 19) {
-                PendingIntent pintent = PendingIntent.getService(mainContext, 0, new Intent(mainContext, NotificationService.class), 0);
-                AlarmManager alarm = (AlarmManager)mainContext.getSystemService(Context.ALARM_SERVICE);
-                alarm.cancel(pintent);
-            }
-        } else {
-            stopPushService();
-        }
-    }
-
-    public static void stopPushService() {
-        mainContext.stopService(new Intent(mainContext, NotificationService.class));
-
-        PendingIntent pintent = PendingIntent.getService(mainContext, 0, new Intent(mainContext, NotificationService.class), 0);
-        AlarmManager alarm = (AlarmManager)mainContext.getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(pintent);
-    }
-
-
-    public static void postInitApplication() {
-        //TODO NOTIFICATION RECEIVER
     }
 
     public static void savePreferences(String keyShared, HashMap<String, Object> information){

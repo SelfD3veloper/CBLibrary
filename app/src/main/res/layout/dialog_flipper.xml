@@ -29,8 +29,7 @@
         <RelativeLayout
             android:id="@+id/dialog_flipper_title_container"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/material_blue_500">
+            android:layout_height="48dp">
 
             <ImageButton
                 android:layout_width="48dp"

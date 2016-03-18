@@ -3,6 +3,7 @@ package cbedoy.cblibrary.dialogs.abstracts;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public abstract class AbstractDialog implements DialogSupported.IDialogSupported
     protected ViewGroup mView;
     protected DialogSupported mDialog;
     private Drawable mDrawableBackground;
+
 
     public AbstractDialog(Activity activity){
         mActivity = activity;
@@ -85,9 +87,7 @@ public abstract class AbstractDialog implements DialogSupported.IDialogSupported
 
     protected void takeCurrentScreamShot()
     {
-        mDrawableBackground = BlurService.getInstance().doBlurWithActivity(mActivity);
-
-        mDialog.getWindow().setBackgroundDrawable(mDrawableBackground);
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
 

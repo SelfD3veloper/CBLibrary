@@ -53,7 +53,6 @@ public class ColorProviderService
 
         mBackgroundColor = findEdgeColor();
         mTimeStop = System.currentTimeMillis();
-        LogService.e("Procesamiento de la imagen en " + ( mTimeStop - mTimeStart) + " milisegundos");
     }
 
     private int findEdgeColor() {
